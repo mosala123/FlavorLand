@@ -1,0 +1,80 @@
+ 
+.header {
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 20;
+}
+
+.logo a {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.links ul li a {
+    text-decoration: none;
+    color: #333;
+    border-radius: 8px;
+    padding: 8px 12px;
+    transition: all 0.3s ease-in-out;
+}
+
+.links ul li a:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.bar {
+    font-size: 28px;
+    cursor: pointer;
+    display: none;
+    color: #007bff;
+}
+
+.barContainer {
+    display: none;
+}
+
+@media screen and (max-width: 1080px) {
+    .bar {
+        display: block;
+    }
+
+    .barContainer {
+        display: block;
+    }
+
+    .links {
+        position: absolute;
+        top: 100%;
+        left: -100%;
+        width: 180px;
+        background-color: #f8f9fa; 
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        display: flex;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        transition: left 0.3s ease-in-out;
+        border-radius: 0 0 10px 10px;
+        text-align: start;
+    }
+
+    .links ul {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 15px;
+    }
+
+    .showMenu {
+        left: 0;
+    }
+}
