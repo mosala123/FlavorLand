@@ -27,13 +27,12 @@ type Article = {
   dateModified: string;
 };
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
+// ✅ هذا هو التعديل الصحيح
+interface PageProps {
+  params: { id: string };
+}
 
-const ProductDetails = async ({ params }: Props) => {
+const ProductDetails = async ({ params }: PageProps) => {
   const res = await fetch(
     `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${params.id}`,
     { next: { revalidate: 60 } }
@@ -81,20 +80,7 @@ const ProductDetails = async ({ params }: Props) => {
         <div className="mb-4">
           <h5 className="fw-bold text-dark mb-3">Ingredients:</h5>
           <ul className="list-group list-group-flush">
-            {[
-              data.strIngredient1,
-              data.strIngredient2,
-              data.strIngredient3,
-              data.strIngredient4,
-              data.strIngredient5,
-              data.strIngredient6,
-              data.strIngredient7,
-              data.strIngredient8,
-              data.strIngredient9,
-              data.strIngredient10,
-              data.strIngredient11,
-              data.strIngredient12,
-            ]
+            {[data.strIngredient1, data.strIngredient2, data.strIngredient3, data.strIngredient4, data.strIngredient5, data.strIngredient6, data.strIngredient7, data.strIngredient8, data.strIngredient9, data.strIngredient10, data.strIngredient11, data.strIngredient12]
               .filter((ing) => ing && ing.trim() !== "")
               .map((ingredient, index) => (
                 <li key={index} className="list-group-item">
