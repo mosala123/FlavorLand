@@ -15,7 +15,7 @@ const Header = () => {
     return (
         <header className={`${styles.header} d-flex align-items-center justify-content-between px-5 py-3`}>
             <div className={styles.logo}>
-                <Link href="/home">Delicious Recipes</Link>
+                <Link href="/home">FlavorLand  </Link>
             </div>
 
             <div className={styles.barContainer}>
