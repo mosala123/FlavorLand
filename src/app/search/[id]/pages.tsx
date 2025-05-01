@@ -34,7 +34,7 @@ type Props = {
 };
 
 const ProductsearchDeails = async ({ params }: Props) => {
-  const { id } =   params;
+  const { id } = params as { id: string };
   const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`, {
     next: { revalidate: 60 },
   });
