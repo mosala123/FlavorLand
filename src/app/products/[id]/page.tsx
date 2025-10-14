@@ -48,7 +48,8 @@ const ProductDetails = async ({ params }: Props) => {
 
   return (
     <div className="container my-5 pt-5">
-      <h2 className="text-start pt-4 text-primary fw-bold mb-5">Meal Details</h2>
+<h2 className="text-center pt-4 text-primary fw-bold mb-5">Healthy & Yummy Recipes</h2>
+
 
       <div className="text-center mb-4">
       <h3 className="fw-bold text-dark fs-2 mb-3 text-start">Name Meal : {data.strMeal}</h3>
@@ -64,22 +65,22 @@ const ProductDetails = async ({ params }: Props) => {
       <div className="bg-light p-4 rounded shadow-sm">
 
         <div className="row text-center mb-4">
-          <div className="col-md-4 mb-3">
-            <strong className="text-secondary">Category:</strong>
+          <div className="col-md-4 mb-3 d-flex align-items-center gap-2">
+            <strong className="text-secondary">Category :</strong>
             <p className="text-primary m-0">{data.strCategory}</p>
           </div>
-          <div className="col-md-4 mb-3">
-            <strong className="text-secondary">Area:</strong>
+          <div className="col-md-4 mb-3 d-flex align-items-center gap-2">
+            <strong className="text-secondary">Area :</strong>
             <p className="text-primary m-0">{data.strArea}</p>
           </div>
-          <div className="col-md-4 mb-3">
-            <strong className="text-secondary">Tags:</strong>
+          <div className="col-md-4 mb-3 d-flex align-items-center gap-2">
+            <strong className="text-secondary">Tags :</strong>
             <p className="text-primary m-0">{data.strTags || "No Tags"}</p>
           </div>
         </div>
 
         <div className="mb-4">
-          <h5 className="fw-bold text-dark mb-3">Ingredients:</h5>
+          <h5 className="fw-bold text-dark mb-3">Ingredients :</h5>
           <ul className="list-group list-group-flush">
             {[
               data.strIngredient1,
@@ -105,7 +106,7 @@ const ProductDetails = async ({ params }: Props) => {
         </div>
 
         <div className="mb-4">
-          <h5 className="fw-bold text-dark mb-3">Instructions:</h5>
+          <h5 className="fw-bold text-dark mb-3">Instructions :</h5>
           <p style={{ whiteSpace: "pre-line", lineHeight: "1.8" }} className="text-secondary">
             {data.strInstructions}
           </p>

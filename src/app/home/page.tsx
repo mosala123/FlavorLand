@@ -6,7 +6,8 @@ import image5 from "../../../public/bg1.jpg";
 import image4 from "../../../public/photo-1661529515567-dcb300f41da5.avif";
 import image3 from "../../../public/premium_photo-1713087472522-9ebe85e736bf.avif";
 import image2 from "../../../public/photo-1606890737304-57a1ca8a5b62.avif";
-import { FaInstagram, FaTwitter, FaFacebook, FaYoutube } from "react-icons/fa";  
+ 
+import Testimonials from "@/component/peopleSay/Testimonials";
 
 const HomePages = () => {
   return (
@@ -44,16 +45,16 @@ const HomePages = () => {
         <div className="row g-4">
           <div className="col-md-4">
             <div className="card shadow-sm border-0">
-              <Image src={image2} alt="Feature 1" width={400}  style={{height:"280px"}} className="card-img-top" />
+             <div className="group overflow-hidden">  <Image src={image2} alt="Feature 1" width={400}  style={{height:"280px"}} className=" transition-transform duration-300 card-img-top group-hover:scale-110" /></div>
               <div className="card-body">
-                <h5 className="card-title">Quick & Easy Recipes</h5>
+                <h5 className="card-title">Quick & Easy Recipesb</h5>
                 <p className="card-text">Our recipes are designed to be quick, easy, and perfect for busy days!</p>
               </div>
             </div>
           </div>
           <div className="col-md-4">
             <div className="card shadow-sm border-0">
-              <Image src={image3} alt="Feature 2" width={400}  style={{height:"280px"}} className="card-img-top" />
+               <div className="group overflow-hidden"><Image src={image3} alt="Feature 2" width={400}  style={{height:"280px"}}  className=" transition-transform duration-300 card-img-top group-hover:scale-110" /></div>
               <div className="card-body">
                 <h5 className="card-title">Healthy Meals</h5>
                 <p className="card-text">Explore healthy options for a balanced and nutritious diet. Fuel your body with the best!</p>
@@ -62,7 +63,7 @@ const HomePages = () => {
           </div>
           <div className="col-md-4">
             <div className="card shadow-sm border-0">
-              <Image src={image4} alt="Feature 3" width={400}   style={{height:"280px"}} className="card-img-top" />
+               <div className="group overflow-hidden"><Image src={image4} alt="Feature 3" width={400}   style={{height:"280px"}} className=" transition-transform duration-300 card-img-top group-hover:scale-110" /></div>
               <div className="card-body">
                 <h5 className="card-title">Gourmet Dishes</h5>
                 <p className="card-text">For the food enthusiasts who love to experiment with gourmet cooking. Elevate your meals to the next level!</p>
@@ -73,26 +74,8 @@ const HomePages = () => {
       </section>
 
       
-      {/* Footer */}
-      <footer className="bg-dark text-white text-center py-4 mt-5">
-        <div>
-          <p className="mb-0">© 2025 All rights reserved - Delicious Recipes Website</p>
-          <div className="d-flex justify-content-center mt-3">
-            <Link href="https://instagram.com" target="_blank" className="btn btn-outline-light btn-lg mx-2">
-              <FaInstagram size={30} />
-            </Link>
-            <Link href="https://twitter.com" target="_blank" className="btn btn-outline-light btn-lg mx-2">
-              <FaTwitter size={30} />
-            </Link>
-            <Link href="https://facebook.com" target="_blank" className="btn btn-outline-light btn-lg mx-2">
-              <FaFacebook size={30} />
-            </Link>
-            <Link href="https://youtube.com" target="_blank" className="btn btn-outline-light btn-lg mx-2">
-              <FaYoutube size={30} />
-            </Link>
-          </div>
-        </div>
-      </footer>
+    <Testimonials /> 
+          
     </div>
   );
 };

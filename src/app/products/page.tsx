@@ -31,27 +31,34 @@ const ProductsPages = async () => {
   if (!res.ok) {
     throw new Error("failed to fetch api ");
   }
-  
+
   const result = await res.json();
   const data: Article[] = result.meals;
 
   return (
     <div className="px-4 my-5 pt-5 pb-5 bg-white" style={{ overflow: "hidden" }}>
-      <h2 className="text-center mb-5 text-primary fw-bold">Products Pages</h2>
+      <div className="text-center mb-5">
+        <h1 className="fw-bold text-dark mt-3">Our Delicious Recipes</h1>
+        <p className="text-muted lead">
+          Discover easy, tasty, and healthy dishes crafted by our community chefs.
+        </p>
+      </div>
       <div className="container">
         <div className="row g-4">
           {data.map((item) => (
             <div key={item.idMeal} className="col-lg-4 col-md-6 col-sm-12">
               <div className="card h-100 shadow-sm border-0 ">
-                <img
-                  src={item.strMealThumb}
-                  alt={item.strMeal}
-                  className="card-img-top "
-                  style={{ height: '250px', width: "100%", objectFit: "cover" }}
-                />
+                <div className="group overflow-hidden">
+                  <img
+                    src={item.strMealThumb}
+                    alt={item.strMeal}
+                    className="card-img-top   transition-transform duration-300 card-img-top group-hover:scale-110 "
+                    style={{ height: '250px', width: "100%", objectFit: "cover" }}
+                  />
+                </div>
                 <div className="card-body d-flex flex-column">
                   <p className="card-title " style={{ fontSize: '0.9rem' }}>
-                  <strong>strMeal :</strong>  {item.strMeal}
+                    <strong>StrMeal :</strong>  {item.strMeal}
                   </p>
 
                   <p className="card-text mb-1" style={{ fontSize: '0.9rem' }}>
@@ -61,13 +68,13 @@ const ProductsPages = async () => {
                     <strong>Area :</strong> {item.strArea}
                   </p>
 
-                  <p className="card-text text-muted" style={{ fontSize: '0.85rem' }}>
+                  <p className="card-text  " style={{ fontSize: '0.9rem' }}>
                     <strong>Ingredients :</strong>  {item.strIngredient1}, {item.strIngredient2}, {item.strIngredient3}
                   </p>
 
                   <div className="mt-auto">
                     <Link href={`/products/${item.idMeal}`} className="btn btn-primary w-100">
-                      View Details
+                      View Details   
                     </Link>
                   </div>
 

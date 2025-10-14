@@ -8,6 +8,7 @@ import image3 from "../../../public/premium_photo-1713087472522-9ebe85e736bf.avi
 import image2 from "../../../public/photo-1555939594-58d7cb561ad1.avif";
 import image1 from "../../../public/photo-1606890737304-57a1ca8a5b62.avif";
 import image0 from "../../../public/photo-1661529515567-dcb300f41da5.avif";
+import Footer from "@/component/footer/Footer";
 
 const AboutPages = () => {
   return (
@@ -116,10 +117,7 @@ const AboutPages = () => {
           Back to Home
         </Link>
       </div>
-
-      <footer className="bg-dark text-white text-center py-4">
-        <p className="mb-0">© 2025 FlavorLand. All rights reserved.</p>
-      </footer>
+ 
     </div>
   );
 };

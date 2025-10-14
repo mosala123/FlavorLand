@@ -4,6 +4,7 @@ import styles from "./Header.module.css";
 import Link from 'next/link';
 import { FaBarsStaggered } from "react-icons/fa6";
 import { FaRegWindowClose } from "react-icons/fa";
+import Image from 'next/image';
 
 const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -14,13 +15,16 @@ const Header = () => {
 
     return (
         <header className={`${styles.header} d-flex align-items-center justify-content-between px-5 py-3`}>
-            <div className={styles.logo}>
-                <Link href="/home">FlavorLand  </Link>
+            <div className={`${styles.logo}    `}>
+                <Link href="/home" className='d-flex align-items-center gap-2'>
+                    <Image src="/logo.svg" alt="Logo" width={50} height={20}
+                        objectFit="contain"  ></Image>
+                    FlavorLand  </Link>
             </div>
 
             <div className={styles.barContainer}>
-                {menuOpen 
-                    ? <FaRegWindowClose className={styles.bar} onClick={toggleMenu} /> 
+                {menuOpen
+                    ? <FaRegWindowClose className={styles.bar} onClick={toggleMenu} />
                     : <FaBarsStaggered className={styles.bar} onClick={toggleMenu} />
                 }
             </div>
