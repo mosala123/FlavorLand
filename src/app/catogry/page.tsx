@@ -47,9 +47,9 @@ const CatogryPages = () => {
                 <h2 className="text-center mb-5 fw-bold text-secondary">Explore Our Categories</h2>
 
                 {/* Filter Buttons */}
-                <div className="d-flex justify-content-center mb-4">
+                <div className="d-flex justify-content-center mb-4 flex-wrap gap-3" >
                     <button
-                        className={`btn mx-2 ${selectedCategory === "" ? "btn-primary" : "btn-outline-primary"}`}
+                        className={`btn   ${selectedCategory === "" ? "btn-primary" : "btn-outline-primary"}`}
                         onClick={handleAllClick}
                     >
                         All
