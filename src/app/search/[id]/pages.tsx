@@ -4,15 +4,15 @@ import Image from "next/image";
 import { FaYoutube, FaExternalLinkAlt, FaArrowLeft, FaUtensils, FaGlobe, FaTag } from "react-icons/fa";
 
 type Article = {
-  idMeal: number;
+  idMeal: string;
   strMeal: string;
   strCategory: string;
   strArea: string;
   strMealThumb: string;
-  strTags: string;
-  strYoutube: string;
+  strTags: string | null;
+  strYoutube: string | null;
   strInstructions: string;
-  strSource: string;
+  strSource: string | null;
   [key: string]: string | number | null | undefined;
 };
 
@@ -25,15 +25,21 @@ const SearchDetailPage = async ({ params }: { params: Promise<{ id: string }> })
   }
 
   const result = await res.json();
+  if (!result?.meals?.[0]) {
+    throw new Error("Meal not found");
+  }
   const data: Article = result.meals[0];
 
   // Collect ingredients
-  const ingredients = [];
+  const ingredients: Array<{ name: string; measure: string }> = [];
   for (let i = 1; i <= 20; i++) {
-    if (data[`strIngredient${i}`] && data[`strIngredient${i}`].trim()) {
+    const ingredient = data[`strIngredient${i}`];
+    const measure = data[`strMeasure${i}`];
+
+    if (typeof ingredient === "string" && ingredient.trim()) {
       ingredients.push({
-        name: data[`strIngredient${i}`],
-        measure: data[`strMeasure${i}`] || ''
+        name: ingredient,
+        measure: typeof measure === "string" ? measure : "",
       });
     }
   }
