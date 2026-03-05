@@ -1,5 +1,7 @@
+// search/[id]/page.tsx
 import Link from "next/link";
-import { FaArrowLeft, FaYoutube, FaExternalLinkAlt } from "react-icons/fa";
+import Image from "next/image";
+import { FaYoutube, FaExternalLinkAlt, FaArrowLeft, FaUtensils, FaGlobe, FaTag } from "react-icons/fa";
 
 type Article = {
   idMeal: number;
@@ -9,36 +11,15 @@ type Article = {
   strMealThumb: string;
   strTags: string;
   strYoutube: string;
-  strIngredient1: string;
-  strIngredient2: string;
-  strIngredient3: string;
-  strIngredient4: string;
-  strIngredient5: string;
-  strIngredient6: string;
-  strIngredient7: string;
-  strIngredient8: string;
-  strIngredient9: string;
-  strIngredient10: string;
-  strIngredient11: string;
-  strIngredient12: string;
   strInstructions: string;
   strSource: string;
-  strImageSource: string;
-  dateModified: string;
+  [key: string]: string | number | null | undefined;
 };
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
-
-const ProductsearchDeails = async ({ params }: { params: Promise<{ id: string }> }) => {
+const SearchDetailPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`, {
-    next: { revalidate: 60 },
-  });
-
+  const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
+  
   if (!res.ok) {
     throw new Error("Failed to fetch meal details");
   }
@@ -46,98 +27,104 @@ const ProductsearchDeails = async ({ params }: { params: Promise<{ id: string }>
   const result = await res.json();
   const data: Article = result.meals[0];
 
+  // Collect ingredients
+  const ingredients = [];
+  for (let i = 1; i <= 20; i++) {
+    if (data[`strIngredient${i}`] && data[`strIngredient${i}`].trim()) {
+      ingredients.push({
+        name: data[`strIngredient${i}`],
+        measure: data[`strMeasure${i}`] || ''
+      });
+    }
+  }
+
   return (
-    <div className="container my-5 pt-5">
-      <h2 className="text-start pt-4 text-primary fw-bold mb-5">Meal Details</h2>
+    <div className="container py-5 mt-5">
+      {/* Back to search */}
+      <Link href="/search" className="btn btn-outline-primary mb-4">
+        <FaArrowLeft className="me-2" /> Back to Search
+      </Link>
 
-      <div className="text-center mb-4">
-      <h3 className="fw-bold text-dark fs-2 mb-3 text-start">Name Meal : {data.strMeal}</h3>
-
-        <img
-          src={data.strMealThumb}
-          alt={data.strMeal}
-          className="img-fluid rounded shadow-sm"
-          style={{ maxHeight: "500px", objectFit: "cover", width:"100%" }}
-        />
-      </div>
-
-      <div className="bg-light p-4 rounded shadow-sm">
-
-        <div className="row text-center mb-4">
-          <div className="col-md-4 mb-3">
-            <strong className="text-secondary">Category:</strong>
-            <p className="text-primary m-0">{data.strCategory}</p>
-          </div>
-          <div className="col-md-4 mb-3">
-            <strong className="text-secondary">Area:</strong>
-            <p className="text-primary m-0">{data.strArea}</p>
-          </div>
-          <div className="col-md-4 mb-3">
-            <strong className="text-secondary">Tags:</strong>
-            <p className="text-primary m-0">{data.strTags || "No Tags"}</p>
-          </div>
+      <div className="row g-5">
+        {/* Recipe Image */}
+        <div className="col-lg-5">
+          <Image
+            src={data.strMealThumb}
+            alt={data.strMeal}
+            width={700}
+            height={700}
+            className="img-fluid rounded-4 shadow"
+            style={{ height: "auto" }}
+          />
         </div>
 
-        <div className="mb-4">
-          <h5 className="fw-bold text-dark mb-3">Ingredients:</h5>
-          <ul className="list-group list-group-flush">
-            {[
-              data.strIngredient1,
-              data.strIngredient2,
-              data.strIngredient3,
-              data.strIngredient4,
-              data.strIngredient5,
-              data.strIngredient6,
-              data.strIngredient7,
-              data.strIngredient8,
-              data.strIngredient9,
-              data.strIngredient10,
-              data.strIngredient11,
-              data.strIngredient12,
-            ]
-              .filter(ing => ing && ing.trim() !== "")
-              .map((ingredient, index) => (
-                <li key={index} className="list-group-item">
-                  {ingredient}
-                </li>
+        {/* Recipe Info */}
+        <div className="col-lg-7">
+          <h1 className="display-5 fw-bold mb-3">{data.strMeal}</h1>
+          
+          <div className="d-flex gap-3 mb-4 flex-wrap">
+            <span className="badge bg-primary px-3 py-2">
+              <FaUtensils className="me-1" /> {data.strCategory}
+            </span>
+            <span className="badge bg-success px-3 py-2">
+              <FaGlobe className="me-1" /> {data.strArea}
+            </span>
+            {data.strTags && (
+              <span className="badge bg-info px-3 py-2">
+                <FaTag className="me-1" /> {data.strTags}
+              </span>
+            )}
+          </div>
+
+          {/* Ingredients */}
+          <div className="mb-4">
+            <h5 className="fw-bold mb-3">Ingredients:</h5>
+            <div className="row g-2">
+              {ingredients.map((item, index) => (
+                <div key={index} className="col-md-6">
+                  <div className="bg-light p-2 rounded">
+                    <span className="fw-bold">{item.measure}</span> {item.name}
+                  </div>
+                </div>
               ))}
-          </ul>
-        </div>
+            </div>
+          </div>
 
-        <div className="mb-4">
-          <h5 className="fw-bold text-dark mb-3">Instructions:</h5>
-          <p style={{ whiteSpace: "pre-line", lineHeight: "1.8" }} className="text-secondary">
-            {data.strInstructions}
-          </p>
-        </div>
+          {/* Instructions */}
+          <div className="mb-4">
+            <h5 className="fw-bold mb-3">Instructions:</h5>
+            <p className="text-muted" style={{ whiteSpace: "pre-line", lineHeight: "1.8" }}>
+              {data.strInstructions}
+            </p>
+          </div>
 
-        <div className="d-flex flex-wrap justify-content-center gap-3 mb-4">
-          {data.strYoutube && (
-            <a href={data.strYoutube} target="_blank" className="btn btn-danger d-flex align-items-center gap-2">
-              <FaYoutube /> Watch on YouTube
-            </a>
-          )}
-          {data.strSource && (
-            <a href={data.strSource} target="_blank" className="btn btn-outline-success d-flex align-items-center gap-2">
-              <FaExternalLinkAlt /> View Source
-            </a>
-          )}
-        </div>
-
-        <div className="text-center">
-          <Link href="/products" className="btn btn-outline-primary d-inline-flex align-items-center gap-2">
-            <FaArrowLeft /> Back to Recipe
-          </Link>
+          {/* External Links */}
+          <div className="d-flex gap-3">
+            {data.strYoutube && (
+              <a 
+                href={data.strYoutube} 
+                target="_blank" 
+                className="btn btn-danger"
+                rel="noopener noreferrer"
+              >
+                <FaYoutube className="me-2" /> YouTube
+              </a>
+            )}
+            {data.strSource && (
+              <a 
+                href={data.strSource} 
+                target="_blank" 
+                className="btn btn-outline-success"
+                rel="noopener noreferrer"
+              >
+                <FaExternalLinkAlt className="me-2" /> Source
+              </a>
+            )}
+          </div>
         </div>
       </div>
-
-      {data.dateModified && (
-        <div className="text-muted text-center mt-5" style={{ fontSize: "0.9rem" }}>
-          Last updated: {data.dateModified}
-        </div>
-      )}
     </div>
   );
 };
 
-export default ProductsearchDeails;
+export default SearchDetailPage;

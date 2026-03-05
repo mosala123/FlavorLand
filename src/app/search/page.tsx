@@ -1,189 +1,176 @@
-'use client'
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { FaArrowLeft, FaSearch, FaTimes } from "react-icons/fa";
+// search/page.tsx
+'use client';
 
-type Search = {
-  idMeal: number;
+import Link from 'next/link';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { FaSearch, FaTimes } from 'react-icons/fa';
+
+type Meal = {
+  idMeal: string;
   strMeal: string;
   strMealThumb: string;
+  strCategory: string;
+  strArea: string;
 };
 
-const ProductsPages = () => {
-  return (
-    <div className="container my-5 pt-5">
-      <div className="row justify-content-center">
-        <div className="col-12 text-center mb-5">
-          <h1 className="display-4 fw-bold text-primary">Our Meals</h1>
-          <p className="lead text-muted">Discover delicious meals from around the world</p>
-        </div>
-        
-        <div className="col-md-8 text-center">
-          <div className="card border-0 shadow-lg">
-            <div className="card-body p-5">
-              <h3 className="card-title mb-4">Start Exploring</h3>
-              <p className="card-text mb-4">
-                Use the search bar above to find your favorite meals. We have a wide variety of delicious recipes from different cuisines.
-              </p>
-              <div className="d-flex justify-content-center">
-                <div className="bg-primary rounded-circle p-3 d-inline-flex">
-                  <FaSearch size={30} className="text-white" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+export default function SearchPage() {
+  const [query,    setQuery]    = useState('');
+  const [results,  setResults]  = useState<Meal[]>([]);
+  const [loading,  setLoading]  = useState(false);
+  const [searched, setSearched] = useState(false);
 
-const MealSearch = () => {
-  const [meals, setMeals] = useState<Search[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [isSearching, setIsSearching] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  // Debounced search
   useEffect(() => {
-    const fetchMeals = async () => {
-      if (!searchTerm.trim()) {
-        setMeals([]);
-        setIsSearching(false);
-        return;
-      }
+    if (!query.trim()) { setResults([]); setSearched(false); return; }
 
-      setIsLoading(true);
+    setLoading(true);
+    const timer = setTimeout(async () => {
       try {
-        const res = await fetch(
-          `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchTerm}`
-        );
+        const res  = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`);
         const data = await res.json();
-        setMeals(data.meals || []);
-        setIsSearching(true);
-      } catch (error) {
-        console.error("Error fetching meals:", error);
-        setMeals([]);
+        setResults(data.meals ?? []);
+        setSearched(true);
+      } catch {
+        setResults([]);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
-    };
-
-    const timeoutId = setTimeout(() => {
-      fetchMeals();
     }, 500);
 
-    return () => clearTimeout(timeoutId);
-  }, [searchTerm]);
-
-  const handleClearSearch = () => {
-    setSearchTerm("");
-    setMeals([]);
-    setIsSearching(false);
-  };
+    return () => clearTimeout(timer);
+  }, [query]);
 
   return (
-    <div className="container my-5 pt-5">
-      {/* Input search bar */}
-      <div className="input-group mb-4 pt-5 shadow-sm">
-        <span className="input-group-text bg-primary text-white">
-          <FaSearch />
-        </span>
-        <input
-          type="text"
-          className="form-control form-control-lg"
-          placeholder="Search for meals..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button 
-          className="btn btn-outline-secondary" 
-          onClick={handleClearSearch}
-          disabled={!searchTerm}
-        >
-          <FaTimes />
-        </button>
-      </div>
+    <div style={{ background: '#faf8f5', minHeight: '100vh' }}>
 
-      {/* حالة التحميل */}
-      {isLoading && (
-        <div className="text-center my-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="mt-2">Searching for meals...</p>
-        </div>
-      )}
+      {/* ── Page Header ── */}
+      <div
+        className="py-5 text-center text-white"
+        style={{ background: 'linear-gradient(135deg, #2d4a3e 0%, #1a2e25 100%)' }}
+      >
+        <div className="container py-3">
+          <h1 className="fw-bold display-5 mb-3" style={{ fontFamily: 'Playfair Display, serif' }}>
+            🔍 Search Recipes
+          </h1>
+          <p className="lead mb-4 opacity-75">Find your favourite dish from thousands of recipes</p>
 
-      {/* عرض النتائج أو الصفحة الرئيسية */}
-      {!isSearching && !isLoading && <ProductsPages />}
-
-      {isSearching && !isLoading && (
-        <>
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <h3 className="text-primary">
-              Search Results {meals.length > 0 && `(${meals.length})`}
-            </h3>
-          </div>
-
-          {meals.length > 0 ? (
-            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-              {meals.map((meal) => (
-                <div key={meal.idMeal} className="col">
-                  <div className="card h-100 shadow-sm border-0 meal-card">
-                    <img
-                      src={meal.strMealThumb}
-                      alt={meal.strMeal}
-                      className="card-img-top"
-                      style={{ height: "200px", objectFit: "cover" }}
-                    />
-                    <div className="card-body d-flex flex-column">
-                      <h5 className="card-title">{meal.strMeal}</h5>
-                      <div className="mt-auto">
-                        <Link 
-                          href={`/products/${meal.idMeal}`} 
-                          className="btn btn-primary w-100"
-                        >
-                          View Details
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center my-5 py-5">
-              <div className="card border-0 shadow-sm">
-                <div className="card-body py-5">
-                  <div className="mb-4">
-                    <FaSearch size={50} className="text-muted" />
-                  </div>
-                  <h4 className="text-muted mb-3">No meals found</h4>
-                  <p className="text-muted mb-4">
-                    We couldn't find any meals matching "{searchTerm}". 
-                    Try searching for something else.
-                  </p>
-                  <button 
-                    className="btn btn-primary"
-                    onClick={handleClearSearch}
+          {/* Search bar inside header */}
+          <div className="row justify-content-center">
+            <div className="col-md-7">
+              <div className="input-group input-group-lg shadow">
+                <span className="input-group-text bg-white border-0">
+                  <FaSearch style={{ color: '#e07b54' }} />
+                </span>
+                <input
+                  type="text"
+                  className="form-control border-0"
+                  placeholder="Try: chicken, pasta, sushi..."
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  style={{ outline: 'none', boxShadow: 'none' }}
+                />
+                {query && (
+                  <button
+                    className="btn bg-white border-0"
+                    onClick={() => { setQuery(''); setResults([]); setSearched(false); }}
                   >
-                    Clear Search
+                    <FaTimes className="text-muted" />
                   </button>
-                </div>
+                )}
               </div>
             </div>
-          )}
-        </>
-      )}
+          </div>
+        </div>
+      </div>
 
-      {/* زر العودة */}
-      <div className="text-center mt-5">
-        <Link href="/products" className="btn btn-outline-primary d-inline-flex align-items-center gap-2">
-          <FaArrowLeft /> Back to Products
-        </Link>
+      <div className="container py-5">
+
+        {/* ── Loading ── */}
+        {loading && (
+          <div className="text-center py-5">
+            <div className="spinner-border mb-3" style={{ color: '#e07b54' }} role="status">
+              <span className="visually-hidden">Searching...</span>
+            </div>
+            <p className="text-muted">Searching recipes...</p>
+          </div>
+        )}
+
+        {/* ── Results ── */}
+        {!loading && searched && (
+          <>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <h5 className="text-muted mb-0">
+                Found <strong style={{ color: '#e07b54' }}>{results.length}</strong> recipe{results.length !== 1 ? 's' : ''} for &ldquo;{query}&rdquo;
+              </h5>
+            </div>
+
+            {results.length > 0 ? (
+              <div className="row g-4">
+                {results.map(meal => (
+                  <div key={meal.idMeal} className="col-sm-6 col-lg-4 col-xl-3">
+                    <Link href={`/products/${meal.idMeal}`} className="text-decoration-none">
+                      <div className="card h-100">
+                        <div className="position-relative" style={{ height: 190 }}>
+                          <Image
+                            src={meal.strMealThumb}
+                            alt={meal.strMeal}
+                            fill
+                            sizes="(max-width: 576px) 100vw, 25vw"
+                            style={{ objectFit: 'cover' }}
+                          />
+                          <span className="position-absolute top-0 start-0 m-2 badge rounded-pill" style={{ background: '#e07b54', fontSize: '0.7rem' }}>
+                            {meal.strCategory}
+                          </span>
+                          <span className="position-absolute top-0 end-0 m-2 badge rounded-pill" style={{ background: 'rgba(45,74,62,0.9)', fontSize: '0.7rem' }}>
+                            🌍 {meal.strArea}
+                          </span>
+                        </div>
+                        <div className="card-body p-3">
+                          <h6 className="fw-bold mb-0" style={{ color: '#1a1a1a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {meal.strMeal}
+                          </h6>
+                        </div>
+                        <div className="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
+                          <div className="btn btn-primary w-100 btn-sm">View Recipe →</div>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-5">
+                <div style={{ fontSize: '4rem' }}>🍽</div>
+                <h5 className="text-muted mt-3">No recipes found for &ldquo;{query}&rdquo;</h5>
+                <p className="text-muted">Try a different keyword like <em>chicken</em>, <em>pasta</em>, or <em>beef</em></p>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* ── Before search ── */}
+        {!loading && !searched && (
+          <div className="text-center py-5">
+            <div style={{ fontSize: '5rem', marginBottom: 16 }}>🔎</div>
+            <h5 className="text-muted mb-2">Start typing to search</h5>
+            <p className="text-muted small">Try: chicken, pasta, pizza, sushi, beef, lamb...</p>
+
+            {/* Suggestion chips */}
+            <div className="d-flex gap-2 justify-content-center flex-wrap mt-4">
+              {['Chicken', 'Pasta', 'Pizza', 'Beef', 'Sushi', 'Lamb', 'Seafood'].map(s => (
+                <button
+                  key={s}
+                  className="btn btn-sm btn-outline-secondary rounded-pill"
+                  onClick={() => setQuery(s)}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
-};
-
-export default MealSearch;
+}

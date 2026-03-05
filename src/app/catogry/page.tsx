@@ -1,101 +1,136 @@
-"use client";
+// catogry/page.tsx
+'use client';
 
-type Articeles = {
-    idCategory: number;
-    strCategory: string;
-    strCategoryThumb: string;
-    strCategoryDescription: string;
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+
+type Category = {
+  idCategory: string;
+  strCategory: string;
+  strCategoryThumb: string;
+  strCategoryDescription: string;
 };
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Image from "next/image";
-import image5 from "../../../public/bg1.jpg";
+export default function CategoriesPage() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selected,   setSelected]   = useState('');
+  const [loading,    setLoading]     = useState(true);
 
-const CatogryPages = () => {
-    const [categories, setCategories] = useState < Articeles[] > ([]);
-    const [selectedCategory, setSelectedCategory] = useState < string > ("");
+  useEffect(() => {
+    fetch('https://www.themealdb.com/api/json/v1/1/categories.php')
+      .then(r => r.json())
+      .then(d => { setCategories(d.categories ?? []); setLoading(false); });
+  }, []);
 
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await fetch("https://www.themealdb.com/api/json/v1/1/categories.php");
-                const data = await response.json();
-                setCategories(data.categories);
-            } catch (error) {
-                console.error("Error fetching categories:", error);
-            }
-        };
+  const visible = selected
+    ? categories.filter(c => c.strCategory === selected)
+    : categories;
 
-        fetchCategories();
-    }, []);
+  return (
+    <div style={{ background: '#faf8f5', minHeight: '100vh' }}>
 
-    const handleCategoryClick = (category: string) => {
-        setSelectedCategory(category);
-    };
-
-    const handleAllClick = () => {
-        setSelectedCategory("");
-    };
-
-    return (
-        <div className="bg-light pt-5 overflow-hidden">
-
-            {/* Categories Section */}
-            <section className="container my-5">
-                <h2 className="text-center mb-5 fw-bold text-secondary">Explore Our Categories</h2>
-
-                {/* Filter Buttons */}
-                <div className="d-flex justify-content-center mb-4 flex-wrap gap-3" >
-                    <button
-                        className={`btn   ${selectedCategory === "" ? "btn-primary" : "btn-outline-primary"}`}
-                        onClick={handleAllClick}
-                    >
-                        All
-                    </button>
-                    {categories.map((cat, index) => (
-                        <button
-                            key={index}
-                            className={`btn mx-2 ${selectedCategory === cat.strCategory ? "btn-primary" : "btn-outline-primary"}`}
-                            onClick={() => handleCategoryClick(cat.strCategory)}
-                        >
-                            {cat.strCategory}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Category Cards */}
-                <div className="row g-5 justify-content-center">
-                    {categories
-                        .filter((cat) => selectedCategory === "" || cat.strCategory === selectedCategory)  
-                        .map((cat, index) => (
-                            <div key={index} className=" col-lg-4   col-md-6  col-sm-12 text-center">
-                                <div className="card p-3">
-                                <div className="    overflow-hidden rounded-4 shadow-sm mb-3" style={{ height: '250px' }}>
-                                    <img
-                                        src={cat.strCategoryThumb}
-                                        alt={cat.strCategory}
-                                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                        className="rounded-4 p-0 "
-                                    />
-                                </div>
-                                <h4 className="  mb-2"><strong>Recipe Name : </strong> {cat.strCategory}</h4>
-                                <p className="text-muted"> <strong>Delicious : </strong> {cat.strCategory}  </p>
-                                <p className="text-muted"> <strong>des : </strong> {cat.strCategoryDescription} </p>
-
-                                    </div>
-                            </div>
-                        ))}
-                </div>
-            </section>
-
-            {/* Footer */}
-            <footer className="bg-dark text-white text-center py-4 mt-5">
-                <p className="mb-0">© 2025 All rights reserved - Delicious Recipes Website</p>
-            </footer>
+      {/* ── Page Header ── */}
+      <div
+        className="py-5 text-center text-white"
+        style={{ background: 'linear-gradient(135deg, #f0a500 0%, #c45f38 100%)' }}
+      >
+        <div className="container py-3">
+          <h1 className="fw-bold display-5 mb-3" style={{ fontFamily: 'Playfair Display, serif' }}>
+            📚 Recipe Categories
+          </h1>
+          <p className="lead mb-0 opacity-75">
+            {categories.length} cuisines & food types to explore
+          </p>
         </div>
-    );
-};
+      </div>
 
-export default CatogryPages;
+      <div className="container py-5">
+
+        {/* ── Filter buttons ── */}
+        {!loading && (
+          <div className="d-flex flex-wrap gap-2 justify-content-center mb-5">
+            <button
+              className={`btn rounded-pill btn-sm ${selected === '' ? 'btn-primary' : 'btn-outline-secondary'}`}
+              onClick={() => setSelected('')}
+            >
+              All ({categories.length})
+            </button>
+            {categories.map(cat => (
+              <button
+                key={cat.idCategory}
+                className={`btn rounded-pill btn-sm ${selected === cat.strCategory ? 'btn-primary' : 'btn-outline-secondary'}`}
+                onClick={() => setSelected(cat.strCategory)}
+              >
+                {cat.strCategory}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* ── Loading ── */}
+        {loading && (
+          <div className="text-center py-5">
+            <div className="spinner-border" style={{ color: '#e07b54' }} role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        )}
+
+        {/* ── Category Cards ── */}
+        {!loading && (
+          <div className="row g-4">
+            {visible.map(cat => (
+              <div key={cat.idCategory} className="col-sm-6 col-lg-4">
+                <Link href={`/products?category=${cat.strCategory}`} className="text-decoration-none">
+                  <div className="card h-100">
+
+                    {/* Category image */}
+                    <div className="position-relative" style={{ height: 220 }}>
+                      <Image
+                        src={cat.strCategoryThumb}
+                        alt={cat.strCategory}
+                        fill
+                        sizes="(max-width: 576px) 100vw, (max-width: 992px) 50vw, 33vw"
+                        style={{ objectFit: 'cover' }}
+                      />
+                      {/* Name overlay */}
+                      <div
+                        className="position-absolute bottom-0 start-0 w-100 p-3"
+                        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.65), transparent)' }}
+                      >
+                        <h5 className="text-white fw-bold mb-0" style={{ fontFamily: 'Playfair Display, serif' }}>
+                          {cat.strCategory}
+                        </h5>
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <div className="card-body p-3">
+                      <p className="text-muted small mb-3" style={{ lineHeight: 1.6 }}>
+                        {cat.strCategoryDescription.slice(0, 120)}...
+                      </p>
+                      <div className="btn btn-primary w-100 btn-sm">
+                        Browse {cat.strCategory} Recipes →
+                      </div>
+                    </div>
+
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ── Empty state ── */}
+        {!loading && visible.length === 0 && (
+          <div className="text-center py-5 text-muted">
+            <div style={{ fontSize: '3rem' }}>🍽</div>
+            <h5 className="mt-3">No categories found</h5>
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+}
