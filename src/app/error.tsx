@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { FaExclamationTriangle, FaRotateRight, FaBug } from 'react-icons/fa6';
+import { FaTriangleExclamation, FaRotateRight, FaBug } from 'react-icons/fa6';
 import { FaHome, FaEnvelope } from 'react-icons/fa';
 
 interface ErrorPageProps {
@@ -46,7 +46,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
             className="d-flex align-items-center justify-content-center rounded-circle mx-auto"
             style={{ width: 110, height: 110, background: 'rgba(220,53,69,0.08)' }}
           >
-            <FaExclamationTriangle size={48} style={{ color: '#dc3545' }} />
+            <FaTriangleExclamation size={48} style={{ color: '#dc3545' }} />
           </div>
           {/* Error 500 badge */}
           <span
